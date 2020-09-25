@@ -10,7 +10,7 @@ import Test.QuickCheck -- see https://hackage.haskell.org/package/QuickCheck for
                        -- documentation if you want to write your own tests
 
 import Control.Monad(liftM)
-import Data.List(nub)
+import Data.List(nub,sort)
 
 -- Tests
 
@@ -88,6 +88,7 @@ labels (Assignment3.Node x xs) = x : labels' xs
     labels' []     = []
     labels' (x:xs) = Main.labels x ++ labels' xs
 
+height (Assignment3.Node _ []) = 0
 height (Assignment3.Node _ xs) = 1 + height' xs
   where
     height' []     = 0
@@ -95,7 +96,7 @@ height (Assignment3.Node _ xs) = 1 + height' xs
 
 prop_Exercise3_count t = Assignment3.count t == count (t :: Assignment3.Tree Int)
 
-prop_Exercise3_labels t = Assignment3.labels t == Main.labels (t :: Assignment3.Tree Int)
+prop_Exercise3_labels t = sort (Assignment3.labels t) == sort (Main.labels (t :: Assignment3.Tree Int))
 
 prop_Exercise3_height t = Assignment3.height t == height (t :: Assignment3.Tree Int)
 
