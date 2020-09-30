@@ -33,7 +33,7 @@ sumPrice (Assignment3.Apple x  : xs) a b l = x * a + sumPrice xs a b l
 sumPrice (Assignment3.Banana x : xs) a b l = x * b + sumPrice xs a b l
 sumPrice (Assignment3.Lemon x  : xs) a b l = fromInteger x * l + sumPrice xs a b l
 
-prop_Exercise1 xs a b l = Assignment3.sumPrice xs a b l == sumPrice xs a b l
+prop_Exercise1 xs a b l = abs (Assignment3.sumPrice xs a b l - sumPrice xs a b l) < 1e-10
 
 -- Exercise 2
 
