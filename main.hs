@@ -102,14 +102,14 @@ prop_Exercise3_height t = Assignment3.height t == height (t :: Assignment3.Tree 
 
 -- Exercise 4
 
-_ = (Assignment3.++) :: [a] -> [a] -> [a]
+_ = Assignment3.append :: [a] -> [a] -> [a]
 a3elem :: Eq a => a -> [a] -> Bool
 a3elem = Assignment3.elem
 _ = Assignment3.last :: [a] -> a
 _ = Assignment3.reverse :: [a] -> [a]
 _ = Assignment3.filter :: (a -> Bool) -> [a] -> [a]
 
-prop_Exercise4_append xs ys = (Assignment3.++) xs ys == xs ++ (ys :: [Int])
+prop_Exercise4_append xs ys = Assignment3.append xs ys == xs ++ (ys :: [Int])
 prop_Exercise4_elem x xs = Assignment3.elem x xs == elem x (xs :: [Int])
 prop_Exercise4_last xs = null xs || Assignment3.last xs == last (xs :: [Int])
 prop_Exercise4_reverse xs = Assignment3.reverse xs == reverse (xs :: [Int])
@@ -130,7 +130,7 @@ main = do
   putStr "height: "
   quickCheck prop_Exercise3_height
   putStrLn "Exercise 4:"
-  putStr "(++): "
+  putStr "append: "
   quickCheck prop_Exercise4_append
   putStr "elem: "
   quickCheck prop_Exercise4_elem
