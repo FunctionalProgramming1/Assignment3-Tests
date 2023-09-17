@@ -9,31 +9,37 @@ import qualified Assignment3
 import Test.QuickCheck -- see https://hackage.haskell.org/package/QuickCheck for
                        -- documentation if you want to write your own tests
 
-import Control.Monad(liftM)
+import Control.Monad(liftM2,liftM3)
 import Data.List(nub,sort)
 
 -- Tests
 
 -- Exercise 1
 
-_ = Assignment3.Apple :: Double -> Assignment3.Fruit
-_ = Assignment3.Banana :: Double -> Assignment3.Fruit
-_ = Assignment3.Lemon :: Integer -> Assignment3.Fruit
+_ = Assignment3.Bicycle :: String -> Integer -> Assignment3.Vehicle
+_ = Assignment3.Car :: String -> Integer -> Double -> Assignment3.Vehicle
+_ = Assignment3.Airplane :: String -> Integer -> Double -> Assignment3.Vehicle
 
-_ = Assignment3.sumPrice :: [Assignment3.Fruit] -> Double -> Double -> Double -> Double
+_ = Assignment3.fastestBelow :: Integer -> [Assignment3.Vehicle] -> Maybe Assignment3.Vehicle
 
-instance Arbitrary Assignment3.Fruit where
-  arbitrary = oneof [liftM Assignment3.Apple arbitrary,
-                     liftM Assignment3.Banana arbitrary,
-                     liftM Assignment3.Lemon arbitrary]
+genNonnegative :: (Arbitrary a, Num a, Ord a) => Gen a
+genNonnegative = fmap abs arbitrary `suchThat` (>= 0)
 
-sumPrice :: [Assignment3.Fruit] -> Double -> Double -> Double -> Double
-sumPrice []                          _ _ _ = 0.0
-sumPrice (Assignment3.Apple x  : xs) a b l = x * a + sumPrice xs a b l
-sumPrice (Assignment3.Banana x : xs) a b l = x * b + sumPrice xs a b l
-sumPrice (Assignment3.Lemon x  : xs) a b l = fromInteger x * l + sumPrice xs a b l
+instance Arbitrary Assignment3.Vehicle where
+  arbitrary = oneof [liftM2 Assignment3.Bicycle arbitrary genNonnegative,
+                     liftM3 Assignment3.Car arbitrary genNonnegative genNonnegative,
+                     liftM3 Assignment3.Airplane arbitrary genNonnegative genNonnegative]
 
-prop_Exercise1 xs a b l = abs (Assignment3.sumPrice xs a b l - sumPrice xs a b l) < 1e-10
+prop_Exercise1 (NonNegative t) vs = case Assignment3.fastestBelow t vs of
+    Nothing -> null (filter (\v -> price v <= t) vs)
+    Just v' -> v' `elem` vs && null (filter (\v -> price v <= t && speed v > speed v') vs)
+  where
+    price (Assignment3.Bicycle _ p) = p
+    price (Assignment3.Car _ p _) = p
+    price (Assignment3.Airplane _ p _) = p
+    speed (Assignment3.Bicycle _ _) = -1 / 0 -- negative infinity
+    speed (Assignment3.Car _ _ s) = s
+    speed (Assignment3.Airplane _ _ s) = s
 
 -- Exercise 2
 
