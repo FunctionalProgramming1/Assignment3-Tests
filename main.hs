@@ -20,7 +20,7 @@ _ = Assignment3.Bicycle :: String -> Integer -> Assignment3.Vehicle
 _ = Assignment3.Car :: String -> Integer -> Double -> Assignment3.Vehicle
 _ = Assignment3.Airplane :: String -> Integer -> Double -> Assignment3.Vehicle
 
-_ = Assignment3.fastestBelow :: Integer -> [Assignment3.Vehicle] -> Maybe Assignment3.Vehicle
+_ = Assignment3.fastestAffordable :: Integer -> [Assignment3.Vehicle] -> Maybe Assignment3.Vehicle
 
 genNonnegative :: (Arbitrary a, Num a, Ord a) => Gen a
 genNonnegative = fmap abs arbitrary `suchThat` (>= 0)
@@ -30,7 +30,7 @@ instance Arbitrary Assignment3.Vehicle where
                      liftM3 Assignment3.Car arbitrary genNonnegative genNonnegative,
                      liftM3 Assignment3.Airplane arbitrary genNonnegative genNonnegative]
 
-prop_Exercise1 (NonNegative t) vs = case Assignment3.fastestBelow t vs of
+prop_Exercise1 (NonNegative t) vs = case Assignment3.fastestAffordable t vs of
     Nothing -> null (filter (\v -> price v <= t) vs)
     Just v' -> v' `elem` vs && null (filter (\v -> price v <= t && speed v > speed v') vs)
   where
